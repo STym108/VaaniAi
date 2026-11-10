@@ -1,7 +1,7 @@
 # Vani AI (वाणी एआई)
 
 > **Low-Resource Indic Dialect Conversational Voice Assistant with Parameter-Efficient QLoRA Adaptation & Dual-Layer OWASP Guardrails**  
-> *Department of Computer Science & Engineering, National Institute of Technology (NIT) Raipur*  
+> *Department of Information Technology, National Institute of Technology (NIT) Raipur*  
 > *Project Guide / Evaluator: Prof. Rakesh Tripathi*
 
 ---
