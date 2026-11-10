@@ -1,0 +1,46 @@
+# Environment & Secrets (NEVER push to GitHub)
+.env
+*.env
+.env.*
+!.env.example
+
+# Python virtual environments & bytecode
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pytest_cache/
+.pytest_cache/
+
+# Node & Frontend dependencies
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+.npm/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+vani_assistant.db
+
+# OS & Editor generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary Colab artifacts
+*.zip
+dataset_pipeline/*.zip
+

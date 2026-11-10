@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-outfit: 'Outfit', sans-serif;
+    --font-jakarta: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-jakarta);
+    background-color: #0A0C0E;
+    color: #ECE6DD;
+  }
+
+  h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-outfit);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Custom Glassmorphic Utilities */
+.glass-panel {
+  background: rgba(18, 22, 26, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(230, 215, 195, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.glass-card {
+  background: rgba(22, 27, 32, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(225, 205, 180, 0.07);
+}
+
+.glass-card:hover {
+  border-color: rgba(223, 177, 91, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 20px rgba(223, 177, 91, 0.06);
+}
+
+.gold-glow {
+  box-shadow: 0 0 40px rgba(223, 177, 91, 0.22), 0 0 80px rgba(223, 177, 91, 0.1);
+}
+
+.gold-border-glow {
+  border-color: rgba(223, 177, 91, 0.4);
+  box-shadow: 0 0 25px rgba(223, 177, 91, 0.15);
+}
+
+/* Custom Ambient Background Gradients */
+.ambient-mesh {
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(223, 177, 91, 0.08) 0px, transparent 50%),
+    radial-gradient(at 85% 20%, rgba(104, 159, 119, 0.06) 0px, transparent 45%),
+    radial-gradient(at 50% 85%, rgba(217, 136, 82, 0.06) 0px, transparent 55%),
+    radial-gradient(at 80% 80%, rgba(223, 177, 91, 0.04) 0px, transparent 50%);
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(11, 13, 15, 0.6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(223, 177, 91, 0.18);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(223, 177, 91, 0.35);
+}
+
+/* Organic Orb Pulsing Animations */
+@keyframes orbFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.03);
+  }
+}
+
+@keyframes pulseSilk {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.5;
+  }
+}
+
+@keyframes waveBar {
+  0%, 100% {
+    height: 6px;
+  }
+  50% {
+    height: 32px;
+  }
+}
+
+.animate-orb-float {
+  animation: orbFloat 6s ease-in-out infinite;
+}
+
+.animate-silk-pulse {
+  animation: pulseSilk 3.5s ease-in-out infinite;
+}
