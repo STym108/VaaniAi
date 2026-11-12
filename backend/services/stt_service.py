@@ -39,8 +39,8 @@ class STTService:
                     "file": (filename, audio_bytes, "audio/webm")
                 }
                 data = {
-                    "model": "saaras:v1",
-                    "language_code": "unknown", # Enables Auto Language Detection!
+                    "model": "saaras:v3",
+                    "language_code": "unknown", # Enables Auto Language Detection (English, Hindi, etc.)
                     "with_diarization": "false"
                 }
 

@@ -38,21 +38,9 @@ export const App: React.FC = () => {
 
       const spokenText = recordResult?.transcript?.trim() || ''
 
-      if (spokenText) {
-        // We captured the user's actual spoken words!
-        if (activeMode === 'live') {
-          addMessage({
-            role: 'user',
-            text: spokenText,
-            languageLabel: '🇮🇳 Voice Query (Live)'
-          })
-          setProcessing(true)
-          wsClient.sendText(spokenText)
-        } else {
-          processVoiceQuery(spokenText)
-        }
-      } else if (activeMode === 'live' && recordResult?.blob && recordResult.blob.size > 0) {
-        // Send raw audio blob to backend Sarvam STT
+      if (activeMode === 'live' && recordResult?.blob && recordResult.blob.size > 100) {
+        // In Live Mode: ALWAYS send authentic speech audio to Sarvam Saaras AI STT on backend!
+        // Sarvam Saaras accurately auto-detects English, Hindi, and Chhattisgarhi without Devanagari transliteration glitches.
         setProcessing(true)
         const reader = new FileReader()
         reader.onloadend = () => {
@@ -62,6 +50,9 @@ export const App: React.FC = () => {
           }
         }
         reader.readAsDataURL(recordResult.blob)
+      } else if (spokenText) {
+        // Fallback for Demo mode
+        processVoiceQuery(spokenText)
       } else {
         // Prompt user to speak again if no speech detected
         alert('No clear speech detected. Please tap the mic, speak your question, and tap again!')
@@ -89,14 +80,19 @@ export const App: React.FC = () => {
     const query = textInput.trim()
     setTextInput('')
 
+    const hasDevanagari = /[\u0900-\u097F]/.test(query)
+    const isCG = /काबर|कइसे|कतेक|तोर|मोर|हमन|तुमन|बर|ला|नइ|झन|हे|हव|करथें|होइस|कतका|लागथे|आथे|जाथे/.test(query)
+    const langCode = isCG ? 'cg' : hasDevanagari ? 'hi-IN' : 'en-IN'
+    const langLabel = isCG ? '🌾 Chhattisgarhi' : hasDevanagari ? '🇮🇳 Hindi' : '🇬🇧 English'
+
     if (activeMode === 'live') {
       addMessage({
         role: 'user',
         text: query,
-        languageLabel: '🇮🇳 Live Query'
+        languageLabel: langLabel
       })
       setProcessing(true)
-      wsClient.sendText(query)
+      wsClient.sendText(query, langCode)
     } else {
       processVoiceQuery(query)
     }

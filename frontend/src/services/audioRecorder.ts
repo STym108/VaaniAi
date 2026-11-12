@@ -61,7 +61,7 @@ export class AudioRecorder {
         this.recognition = new SpeechRecognition()
         this.recognition.continuous = true
         this.recognition.interimResults = true
-        this.recognition.lang = 'hi-IN' // Auto multi-lang / Hindi priority
+        this.recognition.lang = navigator.language || 'en-US'
 
         this.recognition.onresult = (event: any) => {
           let transcriptStr = ''

@@ -59,17 +59,23 @@ export class WebSocketClient {
     const store = useVoiceStore.getState()
 
     switch (data.type) {
-      case 'stt_result':
-        if (data.transcript) {
+      case 'stt_result': {
+        const transcriptText = (data.transcript || data.text || '').trim()
+        if (transcriptText) {
+          const isDevanagari = /[\u0900-\u097F]/.test(transcriptText)
+          const isCG = data.language_code === 'cg' || /काबर|कइसे|कतेक|तोर|मोर|हमन|तुमन|बर|ला|नइ|झन|हे|हव|करथें|होइस|कतका|लागथे|आथे|जाथे/.test(transcriptText)
+          const label = isCG ? '🌾 Chhattisgarhi' : isDevanagari ? '🇮🇳 Hindi' : '🇬🇧 English'
+
           store.addMessage({
             role: 'user',
-            text: data.transcript,
-            language: data.language_code || 'hi-IN',
-            languageLabel: '🎤 Sarvam STT Transcript'
+            text: transcriptText,
+            language: data.language_code || (isDevanagari ? 'hi-IN' : 'en-IN'),
+            languageLabel: label
           })
         }
         store.setCurrentLanguage(data.language_code || 'hi-IN')
         break
+      }
 
       case 'guardrail_status':
         if (!data.is_safe) {
@@ -93,14 +99,19 @@ export class WebSocketClient {
         }
         break
 
-      case 'turn_complete':
+      case 'turn_complete': {
         this.currentAssistantText = data.assistant_text
         this.currentDetectedLang = data.detected_language || 'hi-IN'
+
+        const isDevanagari = /[\u0900-\u097F]/.test(data.assistant_text)
+        const isCG = data.detected_language === 'cg' || /काबर|कइसे|कतेक|तोर|मोर|हमन|तुमन|बर|ला|नइ|झन|हे|हव|करथें/.test(data.assistant_text)
+        const langLabel = isCG ? '🌾 Chhattisgarhi' : isDevanagari ? '🇮🇳 Hindi' : '🇬🇧 English'
 
         store.addMessage({
           role: 'assistant',
           text: data.assistant_text,
           language: data.detected_language,
+          languageLabel: langLabel,
           latencyMs: data.ttfa_latency_ms,
           guardrailStatus: {
             inputPassed: true,
@@ -116,6 +127,7 @@ export class WebSocketClient {
           this.speakWebSpeech(data.assistant_text, data.detected_language)
         }
         break
+      }
 
       case 'guardrail_refusal':
         store.addMessage({

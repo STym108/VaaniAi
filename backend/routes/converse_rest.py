@@ -109,16 +109,20 @@ async def converse_text(req: TextConverseRequest, db: Session = Depends(get_db))
     # 2. Retrieve Memory
     chat_history = await memory_manager.get_gemini_history(session_id)
 
-    # 3. LLM Generation
+    # 3. Detect Language & LLM Generation
+    has_devanagari = any('\u0900' <= char <= '\u097f' for char in req.text)
+    is_cg = any(m in req.text for m in ["काबर", "कइसे", "कतेक", "तोर", "मोर", "हमन", "तुमन", "बर", "ला", "नइ", "झन", "हे", "हव", "करथें", "होइस", "कतका", "लागथे", "आथे", "जाथे"])
+    target_lang = "cg" if is_cg else ("hi-IN" if has_devanagari else req.language_code or "en-IN")
+
     full_response = ""
-    async for chunk in llm_service.stream_response(guard_res.sanitized_text, chat_history, req.language_code):
+    async for chunk in llm_service.stream_response(guard_res.sanitized_text, chat_history, target_lang):
         full_response += chunk
 
     output_guard_res = guardrails.validate_output(full_response)
     safe_response = output_guard_res.sanitized_text
 
     # 4. TTS Generation
-    audio_bytes = await tts_service.synthesize_speech(safe_response, req.language_code)
+    audio_bytes = await tts_service.synthesize_speech(safe_response, target_lang)
     latency_ms = int((time.time() - start_time) * 1000)
 
     # 5. Persist Turn

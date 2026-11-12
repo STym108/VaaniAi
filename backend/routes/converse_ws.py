@@ -50,9 +50,14 @@ async def websocket_converse(websocket: WebSocket):
                 user_text = stt_res.text
                 detected_lang = stt_res.language_code
 
+                # Refine dialect detection for Chhattisgarhi
+                if user_text and any(m in user_text for m in ["काबर", "कइसे", "कतेक", "तोर", "मोर", "हमन", "तुमन", "बर", "ला", "नइ", "झन", "हे", "हव", "करथें", "होइस", "कतका", "लागथे", "आथे", "जाथे"]):
+                    detected_lang = "cg"
+
                 await websocket.send_json({
                     "type": "stt_result",
                     "text": user_text,
+                    "transcript": user_text,
                     "language_code": detected_lang,
                     "confidence": stt_res.confidence
                 })
@@ -61,7 +66,13 @@ async def websocket_converse(websocket: WebSocket):
             elif msg_type == "text_query":
                 user_text = data.get("text", "")
                 has_devanagari = any('\u0900' <= char <= '\u097f' for char in user_text)
-                detected_lang = "hi-IN" if has_devanagari else data.get("language_code", "en-IN")
+                is_cg = any(m in user_text for m in ["काबर", "कइसे", "कतेक", "तोर", "मोर", "हमन", "तुमन", "बर", "ला", "नइ", "झन", "हे", "हव", "करथें", "होइस", "कतका", "लागथे", "आथे", "जाथे"])
+                if is_cg:
+                    detected_lang = "cg"
+                elif has_devanagari:
+                    detected_lang = "hi-IN"
+                else:
+                    detected_lang = data.get("language_code", "en-IN")
 
             if not user_text:
                 continue
