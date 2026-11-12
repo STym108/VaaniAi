@@ -201,20 +201,29 @@ export class WebSocketClient {
     }
   }
 
-  private clearAudioQueue() {
+  public stopSpeaking() {
     if (this.currentAudio) {
       try {
         this.currentAudio.pause()
         this.currentAudio.currentTime = 0
+        this.currentAudio.onended = null
+        this.currentAudio.onerror = null
+        this.currentAudio.src = ''
       } catch (e) {}
       this.currentAudio = null
     }
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel()
+      try {
+        window.speechSynthesis.cancel()
+      } catch (e) {}
     }
     this.audioQueue = []
     this.isPlayingAudio = false
     useVoiceStore.getState().setSpeaking(false)
+  }
+
+  private clearAudioQueue() {
+    this.stopSpeaking()
   }
 
   private queueAudio(base64Audio: string) {

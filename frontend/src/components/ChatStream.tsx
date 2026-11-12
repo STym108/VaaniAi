@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Volume2, ShieldCheck, AlertTriangle, Clock, User, Bot } from 'lucide-react'
+import { Volume2, Square, ShieldCheck, AlertTriangle, User, Bot } from 'lucide-react'
 import { useVoiceStore, type ChatMessage } from '../store/useVoiceStore'
+import { wsClient } from '../services/websocketClient'
 
 export const ChatStream: React.FC = () => {
-  const { messages } = useVoiceStore()
+  const { messages, isSpeaking } = useVoiceStore()
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -12,11 +13,20 @@ export const ChatStream: React.FC = () => {
   }, [messages])
 
   const handleReplay = (text: string, lang?: string) => {
+    wsClient.stopSpeaking()
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel()
       const utterance = new SpeechSynthesisUtterance(text)
       utterance.lang = lang?.startsWith('hi') ? 'hi-IN' : 'en-US'
-      utterance.rate = 1.05
+      utterance.rate = 1.02
+      utterance.onstart = () => {
+        useVoiceStore.getState().setSpeaking(true)
+      }
+      utterance.onend = () => {
+        useVoiceStore.getState().setSpeaking(false)
+      }
+      utterance.onerror = () => {
+        useVoiceStore.getState().setSpeaking(false)
+      }
       window.speechSynthesis.speak(utterance)
     }
   }
@@ -84,14 +94,6 @@ export const ChatStream: React.FC = () => {
                         : 'Guardrail Passed'}
                     </span>
                   )}
-
-                  {/* Latency Metric */}
-                  {msg.latencyMs && (
-                    <span className="flex items-center gap-1 text-[#8A857C] font-mono ml-auto">
-                      <Clock className="w-3 h-3" />
-                      {msg.latencyMs}ms
-                    </span>
-                  )}
                 </div>
 
                 {/* Main Text Message */}
@@ -99,16 +101,28 @@ export const ChatStream: React.FC = () => {
                   {msg.text}
                 </p>
 
-                {/* Footer Controls: Audio Replay for Assistant */}
+                {/* Footer Controls: Audio Replay / Stop for Assistant */}
                 {!isUser && (
                   <div className="flex items-center justify-between mt-3 pt-2 border-t border-white/5 text-xs text-[#8A857C]">
-                    <button
-                      onClick={() => handleReplay(msg.text, msg.language)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[#DFB15B] hover:text-[#F3CA78] transition-colors cursor-pointer"
-                    >
-                      <Volume2 className="w-3.5 h-3.5" />
-                      <span>Replay Voice</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {isSpeaking ? (
+                        <button
+                          onClick={() => wsClient.stopSpeaking()}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 font-medium transition-colors cursor-pointer"
+                        >
+                          <Square className="w-3 h-3 fill-current" />
+                          <span>Stop Voice</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleReplay(msg.text, msg.language)}
+                          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[#DFB15B] hover:text-[#F3CA78] transition-colors cursor-pointer"
+                        >
+                          <Volume2 className="w-3.5 h-3.5" />
+                          <span>Replay</span>
+                        </button>
+                      )}
+                    </div>
                     <span className="text-[11px] font-mono text-[#6E6A62]">
                       {msg.timestamp}
                     </span>

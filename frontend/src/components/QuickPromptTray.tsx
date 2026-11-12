@@ -88,17 +88,18 @@ export const QuickPromptTray: React.FC = () => {
   }
 
   return (
-    <div className="w-full px-4 py-3 border-t border-white/5 bg-[#0D1013]/90 backdrop-blur-md">
+    <div className="w-full px-4 py-2.5 border-t border-white/5 bg-[#0D1013]/60 backdrop-blur-md">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="w-3.5 h-3.5 text-[#DFB15B]" />
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#A8A398]">
-            Quick Interactive Scenarios for Evaluation
-          </span>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#9B978F]">
+            <Sparkles className="w-3.5 h-3.5 text-[#DFB15B]" />
+            <span>Sample Prompts</span>
+          </div>
+          <span className="text-[10px] text-[#6E6A62]">Click to test</span>
         </div>
 
-        {/* Scrollable Scenario Cards */}
-        <div className="flex items-center gap-2.5 overflow-x-auto pb-1.5 scrollbar-thin">
+        {/* Scrollable Scenario Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
           {testScenarios.map((scenario, index) => {
             const isGuardrail = scenario.type === 'guardrail'
             const isPII = scenario.type === 'pii'
@@ -108,32 +109,23 @@ export const QuickPromptTray: React.FC = () => {
               <button
                 key={index}
                 onClick={() => handleTrigger(scenario.text, scenario.lang)}
-                className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-xl text-left border transition-all cursor-pointer ${
+                title={scenario.text}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer whitespace-nowrap ${
                   isCG
-                    ? 'bg-[#DFB15B]/15 hover:bg-[#DFB15B]/25 border-[#DFB15B]/40 hover:border-[#DFB15B]/70 text-[#F5D58C]'
+                    ? 'bg-[#DFB15B]/10 hover:bg-[#DFB15B]/20 border-[#DFB15B]/30 hover:border-[#DFB15B]/50 text-[#F5D58C]'
                     : isGuardrail
-                    ? 'bg-[#2A1815]/60 hover:bg-[#381D1A] border-[#D97D54]/30 hover:border-[#D97D54]/60 text-[#FFA88B]'
+                    ? 'bg-[#2A1815]/50 hover:bg-[#381D1A]/70 border-[#D97D54]/30 hover:border-[#D97D54]/50 text-[#FFA88B]'
                     : isPII
-                    ? 'bg-[#18231C]/60 hover:bg-[#1E2E24] border-[#689F77]/30 hover:border-[#689F77]/60 text-[#9ED8AC]'
-                    : 'glass-card hover:bg-[#1C2229] border-white/5 hover:border-[#DFB15B]/30 text-[#ECE6DD]'
+                    ? 'bg-[#18231C]/50 hover:bg-[#1E2E24]/70 border-[#689F77]/30 hover:border-[#689F77]/50 text-[#9ED8AC]'
+                    : 'bg-white/5 hover:bg-white/10 border-white/5 hover:border-white/15 text-[#ECE6DD]'
                 }`}
               >
                 {isGuardrail ? (
-                  <ShieldAlert className="w-3.5 h-3.5 text-[#D97D54] flex-shrink-0" />
+                  <ShieldAlert className="w-3 h-3 text-[#D97D54] flex-shrink-0" />
                 ) : (
-                  <Globe className="w-3.5 h-3.5 text-[#DFB15B] flex-shrink-0" />
+                  <Globe className="w-3 h-3 text-[#DFB15B] flex-shrink-0" />
                 )}
-                <div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-medium">{scenario.title}</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-black/40 text-[#9B978F]">
-                      {scenario.lang}
-                    </span>
-                  </div>
-                  <p className="text-[10px] text-[#7A766F] truncate max-w-[200px]">
-                    &quot;{scenario.text}&quot;
-                  </p>
-                </div>
+                <span>{scenario.title}</span>
               </button>
             )
           })}

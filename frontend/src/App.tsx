@@ -9,7 +9,7 @@ import { SettingsModal } from './components/SettingsModal'
 import { AudioRecorder, type AudioRecorderResult } from './services/audioRecorder'
 import { processVoiceQuery } from './services/mockVoiceEngine'
 import { useVoiceStore } from './store/useVoiceStore'
-import { Send, Sparkles, MessageSquare } from 'lucide-react'
+import { Send, MessageSquare } from 'lucide-react'
 import { wsClient } from './services/websocketClient'
 
 export const App: React.FC = () => {
@@ -107,12 +107,6 @@ export const App: React.FC = () => {
       <main className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 md:p-6 overflow-hidden">
         {/* Left Column: Voice Orb & Live Visualizer (Hero Area) */}
         <section className="lg:col-span-5 flex flex-col justify-between glass-panel rounded-3xl p-6 relative overflow-hidden shadow-2xl">
-          {/* Subtle Ambient Background Watermark */}
-          <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/5 text-[11px] text-[#A8A398]">
-            <Sparkles className="w-3.5 h-3.5 text-[#DFB15B]" />
-            <span>Real-time Stream Engine</span>
-          </div>
-
           <div className="my-auto flex flex-col items-center">
             {/* Central Animated Fluid Orb */}
             <VoiceOrb onToggleRecord={handleToggleRecord} />
@@ -122,23 +116,23 @@ export const App: React.FC = () => {
           </div>
 
           {/* Quick Informational Pill */}
-          <div className="pt-4 border-t border-white/5 text-center text-xs text-[#8A857C]">
-            <span className="font-mono text-[#DFB15B]">Auto-detects</span> Hindi, English &amp; Hinglish with Sub-Second Audio Streaming
+          <div className="pt-3 border-t border-white/5 text-center text-xs text-[#8A857C]">
+            Speak naturally in <span className="text-[#DFB15B]">Hindi</span>, <span className="text-[#DFB15B]">English</span>, or <span className="text-[#DFB15B]">Chhattisgarhi</span>
           </div>
         </section>
 
         {/* Right Column: Multi-Turn Conversation Log & Text Bar */}
         <section className="lg:col-span-7 flex flex-col glass-panel rounded-3xl overflow-hidden shadow-2xl">
           {/* Conversation Feed Header */}
-          <div className="px-5 py-3.5 border-b border-white/5 bg-[#12161A]/80 flex items-center justify-between">
+          <div className="px-5 py-3 border-b border-white/5 bg-[#12161A]/60 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4 text-[#DFB15B]" />
               <h2 className="text-xs font-semibold uppercase tracking-wider text-[#C5C0B6]">
-                Live Multilingual Conversation Log
+                Conversation
               </h2>
             </div>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#689F77]/15 text-[#88C498] border border-[#689F77]/30">
-              Context Window Active
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-white/5 text-[#A8A398] border border-white/5">
+              Live Session
             </span>
           </div>
 
@@ -157,7 +151,7 @@ export const App: React.FC = () => {
               type="text"
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
-              placeholder="Or type your query in Hindi, English, or Hinglish..."
+              placeholder="Ask anything in English, Hindi, or Chhattisgarhi..."
               className="flex-1 bg-[#181D22] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-[#ECE6DD] placeholder-[#7A766F] focus:outline-none focus:border-[#DFB15B]/50 transition-colors"
             />
             <button

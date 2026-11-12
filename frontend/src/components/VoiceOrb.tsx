@@ -1,7 +1,8 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic, MicOff, Volume2, Sparkles, Loader2 } from 'lucide-react'
+import { Mic, MicOff, Volume2, Sparkles, Loader2, Square } from 'lucide-react'
 import { useVoiceStore } from '../store/useVoiceStore'
+import { wsClient } from '../services/websocketClient'
 
 interface VoiceOrbProps {
   onToggleRecord: () => void
@@ -98,19 +99,34 @@ export const VoiceOrb: React.FC<VoiceOrbProps> = ({ onToggleRecord }) => {
       </motion.button>
 
       {/* Status Label & Instructions */}
-      <div className="mt-5 text-center">
+      <div className="mt-5 text-center flex flex-col items-center">
         <p className="text-sm font-medium text-[#ECE6DD]">
           {isRecording
-            ? 'Listening... (Speak naturally in any language)'
+            ? 'Listening... (Tap to Send)'
             : isProcessing
-            ? 'Processing Language & Reasoning...'
+            ? 'Thinking...'
             : isSpeaking
-            ? 'Vani is Speaking...'
-            : 'Tap Microphone to Speak'}
+            ? 'Speaking...'
+            : 'Tap microphone to speak'}
         </p>
         <p className="text-xs text-[#8A857C] mt-1">
-          Supports Hindi, English &amp; Hinglish with Auto-Detection
+          Hindi &bull; English &bull; Chhattisgarhi
         </p>
+
+        {/* Dedicated Stop Speaking Button */}
+        {isSpeaking && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              wsClient.stopSpeaking()
+            }}
+            className="mt-3 flex items-center gap-2 px-4 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-red-300 hover:text-red-200 text-xs font-semibold tracking-wide transition-all shadow-lg shadow-red-500/10 cursor-pointer animate-pulse"
+            title="Stop voice playback"
+          >
+            <Square className="w-3.5 h-3.5 fill-current" />
+            <span>Stop Speaking</span>
+          </button>
+        )}
       </div>
     </div>
   )

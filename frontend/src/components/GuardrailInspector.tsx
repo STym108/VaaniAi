@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ShieldCheck, ShieldAlert, Lock, Zap, Database, Fingerprint, EyeOff, CheckCircle2 } from 'lucide-react'
+import { X, ShieldCheck, ShieldAlert, Zap, Database, Fingerprint, EyeOff, CheckCircle2 } from 'lucide-react'
 import { useVoiceStore } from '../store/useVoiceStore'
 import { wsClient } from '../services/websocketClient'
 import { processVoiceQuery } from '../services/mockVoiceEngine'
